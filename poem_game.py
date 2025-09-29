@@ -1,4 +1,4 @@
-import streamlit as tk
+import streamlit as st
 import random
 
 def load_poems(filename):
@@ -17,40 +17,40 @@ class PoemFillGame:
         random.shuffle(self.poems)
         self.current = None
 
-        self.label_top = tk.Label(root, text="点击开始", font=('微软雅黑', 28))
+        self.label_top = st.Label(root, text="点击开始", font=('微软雅黑', 28))
         self.label_top.pack(pady=30)
 
-        self.label_hint = tk.Label(root, text="", font=('微软雅黑', 22))
+        self.label_hint = st.Label(root, text="", font=('微软雅黑', 22))
         self.label_hint.pack(pady=20)
 
-        self.frame_entry = tk.Frame(root)
+        self.frame_entry = st.Frame(root)
         self.frame_entry.pack(pady=20)
 
-        self.label_up_hint = tk.Label(self.frame_entry, text="", font=('微软雅黑', 20))
+        self.label_up_hint = st.Label(self.frame_entry, text="", font=('微软雅黑', 20))
         self.label_up_hint.grid(row=0, column=0)
-        self.entry_up = tk.Entry(self.frame_entry, font=('微软雅黑', 20), width=10, justify='center')
+        self.entry_up = st.Entry(self.frame_entry, font=('微软雅黑', 20), width=10, justify='center')
         self.entry_up.grid(row=0, column=1)
 
-        self.label_down_hint = tk.Label(self.frame_entry, text="", font=('微软雅黑', 20))
+        self.label_down_hint = st.Label(self.frame_entry, text="", font=('微软雅黑', 20))
         self.label_down_hint.grid(row=1, column=0)
-        self.entry_down = tk.Entry(self.frame_entry, font=('微软雅黑', 20), width=10, justify='center')
+        self.entry_down = st.Entry(self.frame_entry, font=('微软雅黑', 20), width=10, justify='center')
         self.entry_down.grid(row=1, column=1)
 
-        self.btn_start = tk.Button(root, text="开始", font=('微软雅黑', 18), command=self.next_poem)
+        self.btn_start = st.Button(root, text="开始", font=('微软雅黑', 18), command=self.next_poem)
         self.btn_start.pack(side='left', padx=20)
 
-        self.btn_check = tk.Button(root, text="核对", font=('微软雅黑', 18), command=self.check, state='disabled')
+        self.btn_check = st.Button(root, text="核对", font=('微软雅黑', 18), command=self.check, state='disabled')
         self.btn_check.pack(side='left', padx=20)
 
-        self.btn_next = tk.Button(root, text="下一题", font=('微软雅黑', 18), command=self.next_poem, state='disabled')
+        self.btn_next = st.Button(root, text="下一题", font=('微软雅黑', 18), command=self.next_poem, state='disabled')
         self.btn_next.pack(side='left', padx=20)
 
-        self.btn_end = tk.Button(root, text="结束", font=('微软雅黑', 18), command=self.end_game)
+        self.btn_end = st.Button(root, text="结束", font=('微软雅黑', 18), command=self.end_game)
         self.btn_end.pack(side='left', padx=20)
 
     def next_poem(self):
-        self.entry_up.delete(0, tk.END)
-        self.entry_down.delete(0, tk.END)
+        self.entry_up.delete(0, st.END)
+        self.entry_down.delete(0, st.END)
         self.label_hint.config(text="")
         self.btn_start.config(state='disabled')
         self.btn_check.config(state='normal')
@@ -94,9 +94,10 @@ class PoemFillGame:
 
 if __name__ == "__main__":
     poems = load_poems('./poems.txt')
-    root = tk.Tk()
+    root = st.Tk()
     root.title("诗词填写游戏")
     root.geometry("730x540") # 宽大适合平板触控
     game = PoemFillGame(root, poems)
 
     root.mainloop()
+
