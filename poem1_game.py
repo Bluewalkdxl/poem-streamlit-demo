@@ -73,4 +73,36 @@ with col2:
 if st.session_state.message:
     st.info(st.session_state.message)
 
-col_start, col_check, col_next, col_end = st.columns([1
+col_start, col_check, col_next, col_end = st.columns([1,1,1,1])
+
+with col_check:
+    # 核对按钮
+    if st.button("核对"):
+        up_right = up[2:]
+        down_right = down[2:]
+        up_user = st.session_state.up_input.strip()
+        down_user = st.session_state.down_input.strip()
+        msg = f"上句参考答案：{up}\n下句参考答案：{down}\n"
+        up_ok = up_user == up_right
+        down_ok = down_user == down_right
+        if up_ok and down_ok:
+            msg += "回答：✔全对"
+            st.session_state.right += 1
+        else:
+            msg += ("上句" + ("✔正确" if up_ok else "✘错误")) + "，"
+            msg += ("下句" + ("✔正确" if down_ok else "✘错误"))
+        st.session_state.message = msg
+
+with col_next:
+    # 下一题按钮，点击后题号+1、清空输入和提示
+    if st.button("下一题"):
+        st.session_state.index += 1
+        st.session_state.up_input = ""
+        st.session_state.down_input = ""
+        st.session_state.message = ""
+
+with col_end:
+    # 结束按钮，点击后结束游戏
+    if st.button("结束"):
+        st.session_state.finished = True
+        st.experimental_rerun()
