@@ -53,21 +53,18 @@ if st.session_state.index >= len(st.session_state.poems):
 
 up, down = st.session_state.poems[st.session_state.index]
 
+idx = st.session_state.index
+
+if f'up_input_{idx}' not in st.session_state:
+    st.session_state[f'up_input_{idx}'] = ""
+if f'down_input_{idx}' not in st.session_state:
+    st.session_state[f'down_input_{idx}'] = ""
+
 col1, col2 = st.columns(2)
 with col1:
-    st.markdown(f"### 上句：{up[:2]}____")
-    st.session_state.up_input = st.text_input(
-        "填写上句后半部分", 
-        key=f'up_input_{st.session_state.index}', 
-        value=st.session_state.up_input
-    )
+    st.text_input("填写上句后半部分", key=f'up_input_{idx}')
 with col2:
-    st.markdown(f"### 下句：{down[:2]}____")
-    st.session_state.down_input = st.text_input(
-        "填写下句后半部分", 
-        key=f'down_input_{st.session_state.index}',
-        value=st.session_state.down_input
-    )
+    st.text_input("填写下句后半部分", key=f'down_input_{idx}')
 
 # 信息提示
 if st.session_state.message:
@@ -80,8 +77,8 @@ with col_check:
     if st.button("核对"):
         up_right = up[2:]
         down_right = down[2:]
-        up_user = st.session_state.up_input.strip()
-        down_user = st.session_state.down_input.strip()
+        up_user = st.session_state[f'up_input_{idx}'].strip()
+        down_user = st.session_state[f'down_input_{idx}'].strip()
         msg = f"上句参考答案：{up}\n下句参考答案：{down}\n"
         up_ok = up_user == up_right
         down_ok = down_user == down_right
@@ -106,3 +103,4 @@ with col_end:
     if st.button("结束"):
         st.session_state.finished = True
         st.experimental_rerun()
+
