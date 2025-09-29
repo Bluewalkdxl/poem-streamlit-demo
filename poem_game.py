@@ -94,10 +94,12 @@ class PoemFillGame:
 
 if __name__ == "__main__":
     poems = load_poems('./poems.txt')
+    root=st.session_state
     root.title("诗词填写游戏")
     root.geometry("730x540") # 宽大适合平板触控
     game = PoemFillGame(root, poems)
 
     root.mainloop()
+
 
 
