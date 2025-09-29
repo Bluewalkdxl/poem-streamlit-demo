@@ -43,7 +43,7 @@ if st.session_state.finished:
 
 if st.session_state.index >= len(st.session_state.poems):
     st.session_state.finished = True
-    st.experimental_rerun()
+    st.rerun()
 
 # 获取当前题目
 up, down = st.session_state.poems[st.session_state.index]
@@ -91,9 +91,10 @@ with col_next:
     if st.button("下一题"):
         st.session_state.index += 1
         st.session_state.message = ""
-        st.experimental_rerun()
+        st.rerun()
 
 with col_end:
     if st.button("结束"):
         st.session_state.finished = True
-        st.experimental_rerun()
+        st.rerun()
+
