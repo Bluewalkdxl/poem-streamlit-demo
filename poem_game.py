@@ -1,4 +1,4 @@
-import tkinter as tk
+import streamlit as tk
 import random
 
 def load_poems(filename):
@@ -98,4 +98,5 @@ if __name__ == "__main__":
     root.title("诗词填写游戏")
     root.geometry("730x540") # 宽大适合平板触控
     game = PoemFillGame(root, poems)
+
     root.mainloop()
