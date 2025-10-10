@@ -1,105 +1,57 @@
 import streamlit as st
 import random
+import time
 
+# 读取诗词文件函数
 def load_poems(filename):
-    poems = []
-    with open(filename, 'r', encoding='utf-8') as f:
-        for line in f:
-            if '|' in line:
-                first, second = line.strip().split('|', 1)
-                poems.append((first, second))
+    with open(filename, 'r', encoding='utf-8') as file:
+        poems = [line.strip().split('|') for line in file.readlines()]
     return poems
 
-class PoemFillGame:
-    def __init__(self, root, poems):
-        self.root = root
-        self.poems = poems.copy()
-        random.shuffle(self.poems)
-        self.current = None
+# 载入诗词文件（假设文件为poems.txt）
+poems = load_poems("poems.txt")
 
-        self.label_top = st.Label(root, text="点击开始", font=('微软雅黑', 28))
-        self.label_top.pack(pady=30)
+# 游戏状态
+used_poems = set()
 
-        self.label_hint = st.Label(root, text="", font=('微软雅黑', 22))
-        self.label_hint.pack(pady=20)
+# 页面标题
+st.title("诗词对话游戏")
+# 使用 Streamlit 自带的 st.title 方法
 
-        self.frame_entry = st.Frame(root)
-        self.frame_entry.pack(pady=20)
+# 游戏开始
+if 'started' not in st.session_state:
+    st.session_state.started = False  # 默认游戏没有开始
 
-        self.label_up_hint = st.Label(self.frame_entry, text="", font=('微软雅黑', 20))
-        self.label_up_hint.grid(row=0, column=0)
-        self.entry_up = st.Entry(self.frame_entry, font=('微软雅黑', 20), width=10, justify='center')
-        self.entry_up.grid(row=0, column=1)
+# 控制游戏逻辑的函数
+def start_game():
+    st.session_state.started = True
+    st.session_state.used_poems = set()  # 重置已使用诗句
 
-        self.label_down_hint = st.Label(self.frame_entry, text="", font=('微软雅黑', 20))
-        self.label_down_hint.grid(row=1, column=0)
-        self.entry_down = st.Entry(self.frame_entry, font=('微软雅黑', 20), width=10, justify='center')
-        self.entry_down.grid(row=1, column=1)
+def end_game():
+    st.session_state.started = False
+    st.session_state.used_poems = set()  # 重置游戏状态
 
-        self.btn_start = st.Button(root, text="开始", font=('微软雅黑', 18), command=self.next_poem)
-        self.btn_start.pack(side='left', padx=20)
+# 按钮控制
+if not st.session_state.started:
+    st.button("开始游戏", on_click=start_game)
+else:
+    # 随机选择诗句
+    available_poems = [p for p in poems if tuple(p) not in st.session_state.used_poems]
+    
+    if available_poems:
+        poem = random.choice(available_poems)
+        st.session_state.used_poems.add(tuple(poem))  # 记录已经显示过的诗句
 
-        self.btn_check = st.Button(root, text="核对", font=('微软雅黑', 18), command=self.check, state='disabled')
-        self.btn_check.pack(side='left', padx=20)
-
-        self.btn_next = st.Button(root, text="下一题", font=('微软雅黑', 18), command=self.next_poem, state='disabled')
-        self.btn_next.pack(side='left', padx=20)
-
-        self.btn_end = st.Button(root, text="结束", font=('微软雅黑', 18), command=self.end_game)
-        self.btn_end.pack(side='left', padx=20)
-
-    def next_poem(self):
-        self.entry_up.delete(0, st.END)
-        self.entry_down.delete(0, st.END)
-        self.label_hint.config(text="")
-        self.btn_start.config(state='disabled')
-        self.btn_check.config(state='normal')
-        self.btn_next.config(state='disabled')
-
-        if not self.poems:
-            self.label_top.config(text="全部完成！")
-            self.btn_check.config(state='disabled')
-            self.btn_next.config(state='disabled')
-            return
-
-        self.current = self.poems.pop()
-        up, down = self.current
-        self.label_top.config(text="填写剩余诗句部分：")
-        self.label_up_hint.config(text=f"上句：{up[:2]}")
-        self.label_down_hint.config(text=f"下句：{down[:2]}")
-
-    def check(self):
-        up_user = self.entry_up.get().strip()
-        down_user = self.entry_down.get().strip()
-        up_right = self.current[0][2:]
-        down_right = self.current[1][2:]
-
-        up_result = ('✔正确' if up_user == up_right else f'✘错误，标准：{up_right}')
-        down_result = ('✔正确' if down_user == down_right else f'✘错误，标准：{down_right}')
-
-        result_text = f"""上句：{self.current[0][:2]}{up_user}  {up_result}
-下句：{self.current[1][:2]}{down_user}  {down_result}"""
-        self.label_hint.config(text=result_text)
-        self.btn_check.config(state='disabled')
-        self.btn_next.config(state='normal')
-
-    def end_game(self):
-        self.label_top.config(text="游戏已结束！")
-        self.label_hint.config(text="")
-        self.entry_up.delete(0, tk.END)
-        self.entry_down.delete(0, tk.END)
-        self.btn_check.config(state='disabled')
-        self.btn_next.config(state='disabled')
-        self.btn_start.config(state='disabled')
-
-if __name__ == "__main__":
-    poems = load_poems('./poems.txt')
-    root=st.session_state
-    root.title("诗词填写游戏")
-    root.geometry("730x540") # 宽大适合平板触控
-    game = PoemFillGame(root, poems)
-
-    root.mainloop()
-
-
-
+        # 显示上句
+        st.write(f"上句: {poem[0]}")
+        
+        # 1秒后显示下句
+        time.sleep(1)
+        st.write(f"下句: {poem[1]}")
+        
+        # 等待用户点击继续
+        if st.button("继续"):
+            start_game()
+    else:
+        st.write("游戏结束！所有诗句已显示。")
+        st.button("重新开始", on_click=end_game)
