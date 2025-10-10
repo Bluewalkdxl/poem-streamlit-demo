@@ -43,4 +43,5 @@ if st.button('开始') and not st.session_state.game_started:
     st.session_state.current_poem = None
     st.session_state.show_second_line = False  # 重置是否显示下句的状态
     st.session_state.game_ended = False  # 重置游戏结束状态
-    st.write("游戏开始！点击“下一题”查看诗句。
+    st.write("游戏开始！点击“下一题”查看诗句。")
+
