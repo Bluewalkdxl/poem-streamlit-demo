@@ -31,7 +31,7 @@ st.title('诗词对句游戏')
 
 # 载入诗词
 if not st.session_state.poems:
-    poems = load_poems('f:/python/test/代码/poems.txt')  # 请确保路径正确
+    poems = load_poems('poems.txt')  # 请确保路径正确
     if poems:
         st.session_state.poems = poems
         random.shuffle(st.session_state.poems)  # 随机打乱诗句顺序
@@ -44,4 +44,5 @@ if st.button('开始') and not st.session_state.game_started:
     st.session_state.show_second_line = False  # 重置是否显示下句的状态
     st.session_state.game_ended = False  # 重置游戏结束状态
     st.write("游戏开始！点击“下一题”查看诗句。")
+
 
