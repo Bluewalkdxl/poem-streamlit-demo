@@ -69,16 +69,13 @@ if st.session_state.game_started and not st.session_state.game_ended:
         st.session_state.game_ended = True  # 游戏结束
 
 # 点击“下一题”显示新的诗句
-next_button = st.empty()  # 用一个占位符来管理按钮
-
-if st.button("下一题") and st.session_state.game_started and not st.session_state.game_ended:
-    st.session_state.show_second_line = False  # 重置状态，等待显示下句
-    st.session_state.current_poem = None  # 清空当前诗句
-    time.sleep(1)  # 防止快速点击的问题，稍作延时
-    st.write("点击“下一题”显示下句")
-
-    # 显示下一题按钮
-    next_button.button("下一题", on_click=lambda: None)
+if st.session_state.game_started and not st.session_state.game_ended:
+    next_button = st.button("下一题")
+    if next_button:
+        st.session_state.show_second_line = False  # 重置状态，等待显示下句
+        st.session_state.current_poem = None  # 清空当前诗句
+        time.sleep(1)  # 防止快速点击的问题，稍作延时
+        st.write("点击“下一题”显示下句")
 
 # 游戏结束
 if st.button("结束"):
